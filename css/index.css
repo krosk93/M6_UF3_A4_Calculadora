@@ -1,0 +1,239 @@
+body {
+  font-family: 'Verdana', sans-serif;
+}
+
+.debug {
+  display: inline-flex;
+  width: 30rem;
+  margin-left: 10rem;
+  background-color: #ffffaa;
+  padding: 2rem;
+}
+
+.debug>.section {
+  display: block;
+  flex: 1;
+  border-color: #000000;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.debug>.section>.title {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.debug>.section>.row {
+  flex-direction: row;
+  font-size: 0.75rem;
+}
+
+.debug>.section>.row>.label {
+  text-decoration: underline;
+  margin: 0;
+  display: inline-flex;
+}
+
+.debug>.section>.row>.value {
+  margin: 0 0 0 0.5rem;
+  display: inline-flex;
+}
+
+.calculator {
+  font-family: 'Verdana', sans-serif;
+  width: 30rem;
+  border-radius: 0.5rem;
+  background-color: #c0c0c0;
+  background-image: linear-gradient(#e0e0e0, #f0f0f0 2%, #e0e0e0 4%, #c0c0c0);
+  padding: 0.25rem 2rem 2rem 2rem;
+  box-shadow: inset 0 -0.25rem 1rem #333333;
+  user-select: none;
+  cursor: default;
+  display: inline-block;
+}
+
+.calculator.senyera {
+  background: linear-gradient(to right,
+		#fd3 11.11%,#f00 11.11%,
+		#f00 22.22%,#fd3 22.22%,
+		#fd3 33.33%,#f00 33.33%,
+		#f00 44.44%,#fd3 44.44%,
+		#fd3 55.55%,#f00 55.55%,
+		#f00 66.66%,#fd3 66.66%,
+		#fd3 77.77%,#f00 77.77%,
+		#f00 88.88%,#fd3 88.88%
+	);
+}
+
+.calculator-body {
+  font-size: 3rem;
+  margin-top: 0.25rem;
+  display: flex;
+  width: 100%;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand {
+  color: #505050;
+  text-align: center;
+  font-weight: bold;
+}
+
+.brand-name {
+  font-weight: bolder;
+  font-size: 2rem;
+  margin: 1rem;
+}
+
+.brand-text {
+  font-size: 0.75rem;
+  font-stretch: semi-condensed;
+  line-height: 0.90rem;
+  padding: 0;
+  margin: 0;
+}
+
+.brand-model {
+  font-size: 0.85rem;
+  font-stretch: semi-condensed;
+  padding: 0;
+  margin: 0;
+}
+
+.display-bezel {
+  background-image: radial-gradient(#999999, #777777);
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+  box-shadow: inset 0 0.125rem 0.5rem #000000;
+}
+
+.display {
+  width: 100%;
+  height: 9rem;
+  background-color: rgb(138, 150, 130);
+  position: relative;
+  box-shadow: inset 0 0.125rem 0.5rem #000000;
+}
+
+.display>.back {
+  color: rgb(128, 140, 120);
+}
+
+.display>.front {
+  color: #222222;
+  z-index: 20;
+}
+
+.display>.main {
+  position: absolute;
+  text-align: right;
+  bottom: 0rem;
+  right: 0.5rem;
+  font-family: "DSEG7-Classic-MINI";
+  font-size: 4rem;
+  font-style: italic;
+  font-weight: bold;
+  transform: scale(1, 1.7);
+  transform-origin: bottom right;
+  user-select: text;
+}
+
+.display>.minus {
+  position: absolute;
+  top: 0.25rem;
+  left: 1rem;
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.display>.minus.invisible {
+  visibility: hidden;
+}
+
+.display>.memory {
+  position: absolute;
+  top: 0.25rem;
+  left: 7rem;
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.display>.memory.invisible {
+  visibility: hidden;
+}
+
+.five-button-row {
+  display: flex;
+  margin-top: 2rem;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.five-button {
+  display: inline-flex;
+  flex-basis: 15%;
+  border-radius: 0.5rem;
+  height: 2.5rem;
+  font-size: 1.5rem;
+  align-items: center;
+  color: #ffffff;
+  background-image: linear-gradient(#555555, #222222);
+  box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset -2px -2px 2px rgba(0, 0, 0, .4);
+}
+
+.five-button>p {
+  width: 100%;
+  font-size: 1rem;
+  text-align: center;
+  margin: 0;
+  user-select: none;
+  cursor: default;
+}
+
+.keyboard {
+  display: flex;
+  margin-top: 1rem;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.button-column {
+  display: inline-flex;
+  flex-basis: 20%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.button {
+  display: flex;
+  margin-top: 1rem;
+  background-image: linear-gradient(#555555, #222222);
+  border-radius: 0.25rem 0.25rem 1rem 1rem;
+  box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset -2px -2px 2px rgba(0, 0, 0, .4);
+  justify-content: center;
+  align-items: center;
+}
+
+.button.red {
+  background-image: linear-gradient(#dd0000, #ff0000);
+}
+
+.button.double {
+  flex: 2;
+}
+
+.button>p {
+  color: #ffffff;
+  text-align: center;
+  line-height: 5rem;
+  margin: 0;
+}

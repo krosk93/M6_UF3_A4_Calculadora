@@ -1,0 +1,304 @@
+<html>
+
+<head>
+  <title>Calculadora</title>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/dseg@0.43.0/css/dseg.css" />
+  <style>
+    .calculator {
+      font-family: sans-serif;
+      width: 500px;
+      border-radius: 0.5rem;
+      background-color: #c0c0c0;
+      padding: 0.25rem 2rem 2rem 2rem;
+      box-shadow: inset 0 -0.25rem 1rem #000000;
+    }
+
+    .calculator-body {
+      font-size: 4rem;
+      margin-top: 0.25rem;
+      width: 100%;
+      border-spacing: 1rem;
+      table-layout: fixed;
+    }
+
+    .brand {
+      font-family: 'Verdana', sans-serif;
+      color: #505050;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .brand-name {
+      font-weight: bolder;
+      font-size: 2rem;
+      margin: 1rem;
+    }
+
+    .brand-text {
+      font-size: 0.75rem;
+      font-stretch: semi-condensed;
+      line-height: 0.90rem;
+      padding: 0;
+      margin: 0;
+    }
+
+    .brand-model {
+      font-size: 0.85rem;
+      font-stretch: semi-condensed;
+      padding: 0;
+      margin: 0;
+    }
+
+    .display-bezel {
+      background-image: radial-gradient(#999999, #777777);
+      border-top-left-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+      box-shadow: inset 0 0.125rem 0.5rem #000000;
+    }
+
+    .display {
+      width: 100%;
+      height: 9rem;
+      background-color: rgb(138, 150, 130);
+      position: relative;
+      box-shadow: inset 0 0.125rem 0.5rem #000000;
+    }
+
+    .display>.back {
+      color: rgb(128, 140, 120);
+    }
+
+    .display>.front {
+      color: #222222;
+      z-index: 20;
+    }
+
+    .display>.main {
+      position: absolute;
+      text-align: right;
+      bottom: 0rem;
+      right: 0rem;
+      font-family: "DSEG7-Classic-MINI";
+      font-style: italic;
+      font-weight: bold;
+      transform: scale(1, 1.7);
+      transform-origin: bottom right;
+    }
+
+    .display>.minus {
+      position: absolute;
+      top: 0.25rem;
+      left: 1rem;
+      font-size: 1rem;
+      font-family: 'Verdana', sans-serif;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    .display>.memory {
+      position: absolute;
+      top: 0.25rem;
+      left: 7rem;
+      font-size: 1rem;
+      font-family: 'Verdana', sans-serif;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    .button {
+      display: inline-block;
+      background-image: linear-gradient(#555555, #222222);
+      color: #ffffff;
+      text-align: center;
+      border-radius: 0.25rem 0.25rem 1rem 1rem;
+      box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset -2px -2px 2px rgba(0, 0, 0, .4);
+    }
+
+    .button.red {
+      background-image: linear-gradient(#dd0000, #ff0000);
+    }
+
+    .five-button-row {
+      display: flex;
+      width: 100%;
+      flex: 1;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .five-button {
+      display: inline-flex;
+      flex-basis: 15%;
+      border-radius: 0.5rem;
+      height: 2.5rem;
+      font-size: 1.5rem;
+      align-items: center;
+      color: #ffffff;
+      background-image: linear-gradient(#555555, #222222);
+      box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset -2px -2px 2px rgba(0, 0, 0, .4);
+    }
+
+    .five-button>p {
+      width: 100%;
+      font-size: 1rem;
+      text-align: center;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="calculator">
+    <div class="brand">
+      <p class="brand-name">CA5IO</p>
+      <p class="brand-text">ELECTRONIC CALCULATOR</p>
+      <p class="brand-model">HL-820VA</p>
+    </div>
+    <table class="calculator-body">
+      <thead>
+        <tr>
+          <th class="display-bezel" colspan=4>
+            <div class="display">
+              <div class="minus back">MINUS</div>
+              <div class="minus front"></div>
+              <div class="memory back">MEMORY</div>
+              <div class="memory front"></div>
+              <div class="main back">8.8.8.8.8.8.8.8</div>
+              <div class="main front"></div>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="width: 100%;" colspan=4>
+            <div class="five-button-row">
+              <div class="five-button">
+                <p>MRC</p>
+              </div>
+              <div class="five-button">
+                <p>M-</p>
+              </div>
+              <div class="five-button">
+                <p>M+</p>
+              </div>
+              <div class="five-button">
+                <p>√</p>
+              </div>
+              <div class="five-button">
+                <p>OFF</p>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="button red" id="button-ac">AC</td>
+          <td class="button red" id="button-c">C</td>
+          <td class="button" id="button-percent">%</td>
+          <td class="button" id="button-divide">÷</td>
+        </tr>
+        <tr>
+          <td class="button number">7</td>
+          <td class="button number">8</td>
+          <td class="button number">9</td>
+          <td class="button">x</td>
+        </tr>
+        <tr>
+          <td class="button number">4</td>
+          <td class="button number">5</td>
+          <td class="button number">6</td>
+          <td class="button">-</td>
+        </tr>
+        <tr>
+          <td class="button number">1</td>
+          <td class="button number">2</td>
+          <td class="button number">3</td>
+          <td class="button" rowspan=2>+</td>
+        </tr>
+        <tr>
+          <td class="button number">0</td>
+          <td class="button">.</td>
+          <td class="button">=</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script type="text/javascript">
+    class Calculator {
+      constructor() {
+        this.on = false;
+        this.initialize()
+        this.registerListeners()
+        this.render()
+      }
+
+      initialize() {
+        this.register1 = 0;
+        this.register2 = 0;
+        this.showing1 = true;
+      }
+
+      registerListeners() {
+        document.querySelectorAll(".button.number").forEach(el => {
+          el.addEventListener('click', e => {
+            this.addToCurrentRegister(el.innerHTML)
+            this.render()
+          })
+        })
+        document.querySelector("#button-ac").addEventListener('click', e => {
+          if (this.on) this.initialize();
+          else this.on = true;
+          this.render()
+        })
+      }
+
+      addToCurrentRegister(value) {
+        if (this.displayValue.toString().replace('.', '').length < 8) {
+          const newValue = parseFloat(`${this.displayValue}${value}`)
+          this.setCurrentRegister(newValue)
+        }
+      }
+
+      setCurrentRegister(value) {
+        if (this.showing1) this.register1 = value;
+        else this.register2 = value;
+      }
+
+      swapRegister() {
+        this.showing1 = !this.showing1
+      }
+
+      get displayValue() {
+        if (this.showing1) return this.register1;
+        return this.register2;
+      }
+
+      get minus() {
+        return this.displayValue < 0;
+      }
+
+      get hasError() {
+        if (typeof this.displayValue === "number" && !isNaN(this.displayValue)) return false
+        return true
+      }
+
+      error() {
+        this.setCurrentRegister(NaN)
+      }
+
+      render() {
+        if (this.on) {
+          document.querySelector(".display>.main.front").innerHTML = !this.hasError ? Math.abs(this.displayValue).toString() : "error"
+          if (this.minus) document.querySelector(".display>.minus.front").innerHTML = "MINUS"
+          else document.querySelector(".display>.minus.front").innerHTML = ""
+        } else document.querySelector(".display>.main.front").innerHTML = ""
+      }
+    }
+    window.calculator = new Calculator()
+  </script>
+</body>
+
+</html>

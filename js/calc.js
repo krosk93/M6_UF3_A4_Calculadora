@@ -1,6 +1,7 @@
 class Register {
   constructor(initialValue = 0) {
     this.value = initialValue
+    this.untouched = true
     this.lastIsDot = false
     this.lastIsMinus = false
   }
@@ -28,6 +29,7 @@ class Register {
 
   clear () {
     this.value = 0
+    this.untouched = true
     this.lastIsDot = false
     this.lastIsMinus = false
   }
@@ -37,19 +39,25 @@ class Register {
   }
 
   setValue(newValue) {
-    this.value = parseFloat(newValue)
+    this.value = parseFloat(parseFloat(newValue).toFixed(8-`${Math.floor(newValue)}`.length))
   }
 
   addCharToValue(char) {
+    if(this.untouched) this.untouched = false
     if (this.charLength < 8) {
+      let value = `${this.value}`
       if (char === '.') {
         if (!this.hasDot) this.lastIsDot = true
       } else {
         if (this.lastIsDot) {
-          char = `.${char}`
+          value = `${value}.`
           this.lastIsDot = false
         }
-        this.setValue(`${this.lastIsMinus?'-':''}${this.value}${char}`)
+        if (this.lastIsMinus) {
+          value = `-${value}`
+          this.lastIsMinus = false
+        }
+        this.setValue(`${value}${char}`)
       }
     }
   }
@@ -65,10 +73,11 @@ class Register {
 
 class Calculator {
   constructor() {
-    this.on = false;
+    this.on = !false;
     this.register1 = new Register()
     this.register2 = new Register()
     this.memory = new Register()
+    this.loadMemory()
     this.mainScreen = document.querySelector(".display>.main.front")
     this.memoryScreen = document.querySelector(".display>.memory.front")
     this.minusScreen = document.querySelector(".display>.minus.front")
@@ -108,10 +117,9 @@ class Calculator {
             const value1 = this.register1.value
             const value2 = this.register2.value
             this.register1.clear()
-            this.register2.clear()
             this.activeRegister1 = true
             this.register1.setValue(this.currOp.calc(value1, value2))
-            if(value1 === 1714 && value2 === 155 && this.currOp.name === 'Substract')
+            if(value1 === 1714 && value2 === 155)
               this.easterEgg()
           }
         }
@@ -153,6 +161,7 @@ class Calculator {
           click: e => {
             if (!this.on) return
             this.memory.addValue(this.currentRegister.value)
+            this.storeMemory()
           }
         }
       ],
@@ -162,6 +171,7 @@ class Calculator {
           click: e => {
             if (!this.on) return
             this.memory.subValue(this.currentRegister.value)
+            this.storeMemory()
           }
         }
       ],
@@ -190,6 +200,24 @@ class Calculator {
             if (!this.on) return
             if(this.currentRegister.value === 0) this.currentRegister.swapSign()
             else this.setOp('sub')
+          }
+        }
+      ],
+      [
+        'mul',
+        {
+          click: e => {
+            if (!this.on) return
+            else this.setOp('mul')
+          }
+        }
+      ],
+      [
+        'div',
+        {
+          click: e => {
+            if (!this.on) return
+            else this.setOp('div')
           }
         }
       ],
@@ -316,12 +344,25 @@ class Calculator {
     this.render()
   }
 
-  easterEgg() {
-    document.querySelectorAll(".calculator").forEach(el => el.classList.add('senyera'))
+  loadMemory() {
+    if (typeof(Storage) !== "undefined") {
+      console.log("There's storage")
+      if(!!localStorage.getItem("calcmemory")) this.memory.setValue(localStorage.getItem("calcmemory"))
+    }
+  }
+
+  storeMemory() {
+    if (typeof(Storage) !== "undefined") {
+      console.log("There's storage")
+      localStorage.setItem("calcmemory", this.memory.value)
+    }
+  }
+
+  marquee(text, cb) {
     const maxPos = 8
-    const display = function* () {
+    const display = function* (message) {
       const outMessage = Array(8).fill('!')
-      const message = "!!!!!!!!Bon!cop!de!false!!!!!!!!".split('')
+      message = `!!!!${message}!!!!!!!!`.replace(/ /g, '!').split('')
       const messageLength = message.length
       for (let i = 0; i < messageLength; i++) {
         outMessage.shift()
@@ -330,7 +371,7 @@ class Calculator {
       }
       return "!"
     }
-    const valor = display()
+    const valor = display(text)
     const show = () => {
       const sq = valor.next()
       this.mainScreen.innerHTML = sq.value
@@ -339,11 +380,18 @@ class Calculator {
           show()
         }, 250)
       } else {
-        document.querySelectorAll(".calculator").forEach(el => el.classList.remove('senyera'))
         this.render()
+        cb()
       }
     }
     show()
+  }
+
+  easterEgg() {
+    //document.querySelectorAll(".calculator").forEach(el => el.classList.add('senyera'))
+    this.marquee("bon cop de false", () => {
+      //document.querySelectorAll(".calculator").forEach(el => el.classList.add('senyera'))
+    })
   }
 
   turnOn() {
@@ -360,7 +408,6 @@ class Calculator {
     this.on = false
     this.register1.clear()
     this.register2.clear()
-    this.memory.clear()
     // setTimeout(() => {
     //   this.mainScreen.innerHTML = "bye"
     //   setTimeout(() => {
@@ -372,7 +419,7 @@ class Calculator {
   setOp(opName) {
     if (this.ops.has(opName)) {
       this.currOp = this.ops.get(opName)
-      this.swapRegister()
+      //this.swapRegister()
     }
   }
 
@@ -395,6 +442,10 @@ class Calculator {
   }
 
   addToCurrentRegister(char) {
+    if(this.currOp !== null && this.activeRegister1) {
+      if(this.register2.untouched) this.swapRegister()
+      else this.currOp = null
+    }
     this.currentRegister.addCharToValue(char)
   }
 
@@ -414,9 +465,9 @@ class Calculator {
   render() {
     if (this.on) this.mainScreen.innerHTML = !this.currentRegister.hasError ? this.displayValue : "error"
     else this.mainScreen.innerHTML = ""
-    if (this.currentRegister.minus) this.minusScreen.classList.remove('invisible')
+    if (this.currentRegister.minus && this.on) this.minusScreen.classList.remove('invisible')
     else this.minusScreen.classList.add('invisible')
-    if (this.memory.value !== 0) this.memoryScreen.classList.remove('invisible')
+    if (this.memory.value !== 0 && this.on) this.memoryScreen.classList.remove('invisible')
     else this.memoryScreen.classList.add('invisible')
     this.updateDebugInfo()
   }
@@ -427,12 +478,14 @@ class Calculator {
     document.querySelector(".debug>#register1 #charLength>.value").innerHTML = this.register1.charLength
     document.querySelector(".debug>#register1 #lastIsDot>.value").innerHTML = this.register1.lastIsDot
     document.querySelector(".debug>#register1 #lastIsMinus>.value").innerHTML = this.register1.lastIsMinus
+    document.querySelector(".debug>#register1 #untouched>.value").innerHTML = this.register1.untouched
 
     document.querySelector(".debug>#register2 #value>.value").innerHTML = this.register2.value
     document.querySelector(".debug>#register2 #minus>.value").innerHTML = this.register2.minus
     document.querySelector(".debug>#register2 #charLength>.value").innerHTML = this.register2.charLength
     document.querySelector(".debug>#register2 #lastIsDot>.value").innerHTML = this.register2.lastIsDot
     document.querySelector(".debug>#register2 #lastIsMinus>.value").innerHTML = this.register2.lastIsMinus
+    document.querySelector(".debug>#register2 #untouched>.value").innerHTML = this.register2.untouched
 
     document.querySelector(".debug>#memory #value>.value").innerHTML = this.memory.value
     document.querySelector(".debug>#memory #minus>.value").innerHTML = this.memory.minus
@@ -442,7 +495,7 @@ class Calculator {
 
     document.querySelector(".debug>#calculator #on>.value").innerHTML = this.on
     document.querySelector(".debug>#calculator #currOp>.value").innerHTML = this.currOp && this.currOp.name
-    document.querySelector(".debug>#calculator #activeRegister>.value").innerHTML = this.activeRegister1 ? 'Register 1' : 'Register 2'
+    document.querySelector(".debug>#calculator #activeRegister>.value").innerHTML = this.activeRegister1 ? '1' : '2'
   }
 }
 

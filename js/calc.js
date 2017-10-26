@@ -73,7 +73,7 @@ class Register {
 
 class Calculator {
   constructor() {
-    this.on = !false;
+    this.on = !false
     this.register1 = new Register()
     this.register2 = new Register()
     this.memory = new Register()
@@ -118,6 +118,7 @@ class Calculator {
             const value2 = this.register2.value
             this.register1.clear()
             this.activeRegister1 = true
+            this.opExecuted = true
             this.register1.setValue(this.currOp.calc(value1, value2))
             if(value1 === 1714 && value2 === 155)
               this.easterEgg()
@@ -126,6 +127,7 @@ class Calculator {
       ]
     ])
     this.currOp = null
+    this.opExecuted = false
     this.keys = new Map([
       [
         'ac',
@@ -346,14 +348,12 @@ class Calculator {
 
   loadMemory() {
     if (typeof(Storage) !== "undefined") {
-      console.log("There's storage")
       if(!!localStorage.getItem("calcmemory")) this.memory.setValue(localStorage.getItem("calcmemory"))
     }
   }
 
   storeMemory() {
     if (typeof(Storage) !== "undefined") {
-      console.log("There's storage")
       localStorage.setItem("calcmemory", this.memory.value)
     }
   }
@@ -406,8 +406,7 @@ class Calculator {
 
   turnOff() {
     this.on = false
-    this.register1.clear()
-    this.register2.clear()
+    this.initialize()
     // setTimeout(() => {
     //   this.mainScreen.innerHTML = "bye"
     //   setTimeout(() => {
@@ -418,6 +417,11 @@ class Calculator {
 
   setOp(opName) {
     if (this.ops.has(opName)) {
+      if (currOp !== null) {
+        if (!this.activeRegister1) this.ops.get('eq').calc()
+        this.opExecuted = false
+        this.register2.clear()
+      }
       this.currOp = this.ops.get(opName)
       //this.swapRegister()
     }
@@ -426,6 +430,8 @@ class Calculator {
   initialize() {
     this.register1.clear()
     this.register2.clear()
+    this.currOp = null
+    this.opExecuted = false
     this.activeRegister1 = true;
   }
 
@@ -442,6 +448,9 @@ class Calculator {
   }
 
   addToCurrentRegister(char) {
+    if (this.opExecuted && this.activeRegister1) {
+      this.initialize()
+    }
     if(this.currOp !== null && this.activeRegister1) {
       if(this.register2.untouched) this.swapRegister()
       else this.currOp = null

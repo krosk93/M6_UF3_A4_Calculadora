@@ -1,5 +1,5 @@
 html {
-  font-size: 100%;
+  font-size: 50%;
 }
 
 body {
@@ -171,6 +171,29 @@ body {
 
 .display>.memory.invisible {
   visibility: hidden;
+}
+
+.display>.indicators {
+  margin: 0;
+  display: inline-block;
+  position: absolute;
+  font-size: 1rem;
+  top: 0.25rem;
+  left: 14rem;
+}
+
+.display>.indicators>.indicator {
+  display: inline-block;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 0.9rem;
+  font-weight: bold;
+  background-color: rgb(128, 140, 120);
+  color: rgb(138, 150, 130);
+}
+
+.display>.indicators>.active {
+  background-color: #222222;
 }
 
 .five-button-row {

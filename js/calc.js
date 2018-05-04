@@ -4,14 +4,15 @@ class Register {
     this.untouched = true
     this.lastIsDot = false
     this.lastIsMinus = false
+    this.addZeros = 0
   }
 
   get displayValue() {
-    return `${Math.abs(this.value)}${this.lastIsDot ? '.' : ' '}`
+    return `${Math.abs(this.value)}${this.lastIsDot ? '.' : ''}${Array(this.addZeros).fill('0').join('')}`
   }
 
   get charLength() {
-    return `${Math.abs(this.value)}`.replace('.', '').length
+    return `${Math.abs(this.value)}`.replace('.', '').length + this.addZeros
   }
 
   get minus() {
@@ -32,6 +33,7 @@ class Register {
     this.untouched = true
     this.lastIsDot = false
     this.lastIsMinus = false
+    this.addZeros = 0
   }
 
   swapSign() {
@@ -39,7 +41,8 @@ class Register {
   }
 
   setValue(newValue) {
-    this.value = parseFloat(parseFloat(newValue).toFixed(8-`${Math.floor(newValue)}`.length))
+    const decimals = 8 - `${Math.floor(newValue)}`.length
+    this.value = parseFloat(parseFloat(newValue).toFixed(decimals > 0 && decimals <= 20 ? decimals : 0))
   }
 
   addCharToValue(char) {
@@ -48,10 +51,16 @@ class Register {
       let value = `${this.value}`
       if (char === '.') {
         if (!this.hasDot) this.lastIsDot = true
+      } else if (char === '0' && (this.lastIsDot || this.hasDot)) {
+        this.addZeros += 1
       } else {
         if (this.lastIsDot) {
           value = `${value}.`
           this.lastIsDot = false
+        }
+        if (this.addZeros > 0) {
+          value = `${value}${Array(this.addZeros).fill('0').join('')}`
+          this.addZeros = 0
         }
         if (this.lastIsMinus) {
           value = `-${value}`
@@ -86,6 +95,7 @@ class Calculator {
         'sum',
         {
           name: 'Add',
+          code: 'sum',
           calc: (value1, value2) => value1 + value2
         }
       ],
@@ -93,6 +103,7 @@ class Calculator {
         'sub',
         {
           name: 'Substract',
+          code: 'sub',
           calc: (value1, value2) => value1 - value2
         }
       ],
@@ -100,6 +111,7 @@ class Calculator {
         'mul',
         {
           name: 'Multiplication',
+          code: 'mul',
           calc: (value1, value2) => value1 * value2
         }
       ],
@@ -107,12 +119,14 @@ class Calculator {
         'div',
         {
           name: 'Division',
+          code: 'div',
           calc: (value1, value2) => value1 / value2
         }
       ],
       [
         'eq',
         {
+          name: 'Equals',
           calc: () => {
             const value1 = this.register1.value
             const value2 = this.register2.value
@@ -122,6 +136,27 @@ class Calculator {
             this.register1.setValue(this.currOp.calc(value1, value2))
             if(value1 === 1714 && value2 === 155)
               this.easterEgg()
+          }
+        }
+      ],
+      [
+        'percent',
+        {
+          name: 'Percent',
+          calc: () => {
+            const value1 = this.register1.value
+            const value2 = this.register2.value / 100
+            this.register1.clear()
+            this.register2.clear()
+            this.activeRegister1 = true
+            this.opExecuted = true
+            if (this.currOp.code === 'mul' || this.currOp.code === 'div') {
+              this.register1.setValue(this.currOp.calc(value1, value2))
+              this.register2.setValue(value1)
+            } else if (this.currOp.code === 'sum' || this.currOp.code === 'sub') {
+              this.register1.setValue(this.currOp.calc(value1, value1 * value2))
+              this.register2.setValue(value1)
+            }
           }
         }
       ]
@@ -183,6 +218,15 @@ class Calculator {
           click: e => {
             if (!this.on) return
             this.currentRegister.setValue(Math.sqrt(this.currentRegister.value))
+          }
+        }
+      ],
+      [
+        'percent',
+        {
+          click: e => {
+            if (!this.on) return
+            if(!!this.currOp) this.ops.get('percent').calc()
           }
         }
       ],
@@ -478,7 +522,16 @@ class Calculator {
     else this.minusScreen.classList.add('invisible')
     if (this.memory.value !== 0 && this.on) this.memoryScreen.classList.remove('invisible')
     else this.memoryScreen.classList.add('invisible')
+    this.updateCurrOp()
     this.updateDebugInfo()
+  }
+
+  updateCurrOp() {
+    document.querySelectorAll(".display>.indicators>.indicator").forEach(el => {
+      el.classList.remove("active")
+    })
+    if (this.currOp !== null)
+      document.querySelector(`.display>.indicators>.${this.currOp.code}`).classList.add("active")
   }
 
   updateDebugInfo() {
